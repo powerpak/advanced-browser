@@ -155,9 +155,10 @@ collate nocase""")
                 sql = "select * from cards c, notes n where c.nid=n.id and "
         
             sql += preds
+            # NOTE: added ', n.id, c.ord' here to always secondarily sort by create date.
             sql += ("""
 order by %s is null, %s is '',
-case when (%s) glob '*[^0-9.]*' then (%s) else cast((%s) AS real) end
+case when (%s) glob '*[^0-9.]*' then (%s) else cast((%s) AS real) end, n.id, c.ord
 collate nocase """ %
                     (order, order, order, order, order))
     
@@ -323,6 +324,17 @@ class AdvancedBrowser(Browser):
         mw.col.conf[CONF_KEY] = customCols
         # Let Anki do its stuff now
         super(AdvancedBrowser, self).closeEvent(evt)
+
+    def _userTagTree(self, root):
+        """Override the user tag tree in the browser drawer so that we don't show any tags
+        starting with zz.
+        """
+        for t in sorted(self.col.tags.all()):
+            if t.lower() == "marked" or t.lower() == "leech" or t.lower()[0:2] == "zz":
+                continue
+            item = self.CallbackItem(
+                root, t, lambda t=t: self.setFilter("tag", t))
+            item.setIcon(0, QIcon(":/icons/anki-tag.png"))
 
 
 # Override DataModel with our subclass
