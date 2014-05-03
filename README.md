@@ -2,7 +2,7 @@
 
 An Anki add-on that adds advanced features to the card browser. This add-on is licensed under GPLv3.
 
-@powerpak forked this to add some custom sort fields to the browser, like lecture numbers derived from tags; if you are looking for the original addon you should probably head over to [the original fork](https://github.com/hssm/advanced-browser).
+@powerpak forked this to add some custom sort fields to the browser, like lecture numbers derived from particularly named tags; if you don't need such things (probably not) you should head over to [the original fork](https://github.com/hssm/advanced-browser).
 
 The original add-on can also be [downloaded from AnkiWeb](https://ankiweb.net/shared/info/874215009).
 
@@ -27,8 +27,10 @@ You can also add these extra columns:
 
 ![Useful columns](https://raw.github.com/hssm/advanced-browser/master/docs/context.png)
 
-###Lecture number (added in this fork)
+###Lecture number (@powerpak fork)
 I use a tag starting with `zz_lecture_` to mark the lecture number in which I saw something.  This is added as a custom sort field in my fork.
+
+![Note fields](https://raw.github.com/powerpak/advanced-browser/master/docs/lec_number.png)
 
 ###Save search queries (filters)
 If you regularly use filters that aren't part of the default list, you can now save them so you don't have to look up the syntax every time.
