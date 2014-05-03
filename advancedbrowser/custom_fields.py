@@ -63,7 +63,7 @@ class CustomFields:
 
         # Dummy CardStats object so we can use the time() function without
         # creating the object every time.
-        cs = anki.stats.CardStats(None, None)
+        # cs = anki.stats.CardStats(None, None)
         
         # First review
         def cFirstOnData(c, n, t):
@@ -141,6 +141,18 @@ class CustomFields:
         advBrowser.removeColumn("noteTags")
         
         
+        # Lecture number
+        # I use zz_lecture_13 as a special tag for lecture numbers.
+        # This pops it out as a sortable column.
+        cc = advBrowser.newCustomColumn(
+            type = 'nzztags',
+            name = 'Lec #',
+            onData = lambda c, n, t: unicode(self.zzLectureTag(" ".join(unicode(tag) for tag in n.tags))),
+            onSort = lambda: "zzLectureTag(n.tags)"
+        )
+        self.customColumns.append(cc)
+        
+        
         # Overdue interval
         def cOverdueIvl(c, n, t):
             val = self.valueForOverdue(c.odid, c.queue, c.type, c.due)
@@ -171,7 +183,7 @@ class CustomFields:
             elif ivl > 0:
                 return fmtTimeSpan(ivl*86400)
             else:
-                return cs.time(-ivl)
+                return #cs.time(-ivl)
         
         srt = ("(select ivl from revlog where cid = c.id "
                "order by id desc limit 1 offset 1)")
@@ -259,6 +271,14 @@ class CustomFields:
             else:
                 return
     
+    def zzLectureTag(self, tags):
+        tag = filter(lambda t: t[0:11] == u'zz_lecture_', unicode(tags).split(' '))
+        try:
+            if len(tag) > 0: return int(tag[0][11:])
+        except ValueError:
+            pass
+        return 0
+    
     def myLoadCollection(self, _self):
         """Wrap collection load so we can add our custom DB function.
         We do this here instead of on startup because the collection
@@ -268,6 +288,7 @@ class CustomFields:
         # Create a new SQL function that we can use in our queries.
         mw.col.db._db.create_function("valueForField", 3, self.valueForField)
         mw.col.db._db.create_function("valueForOverdue", 4, self.valueForOverdue)
+        mw.col.db._db.create_function("zzLectureTag", 1, self.zzLectureTag)
 
 
 cf = CustomFields()
