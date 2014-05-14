@@ -143,7 +143,7 @@ class AdvancedDataModel(DataModel):
     
             sql = ("""
 select id, srt from tmp order by tmp.srt is null, tmp.srt is '',
-case when tmp.srt glob '*[^0-9.]*' then tmp.srt else cast(tmp.srt AS real) end
+case when tmp.srt glob '*[^0-9.,-]*' then tmp.srt else cast(tmp.srt AS real) end
 collate nocase""")
             
         else:
@@ -158,7 +158,7 @@ collate nocase""")
             # NOTE: added ', n.id, c.ord' here to always secondarily sort by create date.
             sql += ("""
 order by %s is null, %s is '',
-case when (%s) glob '*[^0-9.]*' then (%s) else cast((%s) AS real) end, n.id, c.ord
+case when (%s) glob '*[^0-9.,-]*' then (%s) else cast((%s) AS real) end, n.id, c.ord
 collate nocase """ %
                     (order, order, order, order, order))
     
